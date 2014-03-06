@@ -3,7 +3,7 @@ import requests
 from lxml import etree
 from jinja2 import Template
 import webbrowser
-print "Aplicación base con salida HTML tras respuesta en XML || OpenWeatherMap"
+print "Aplicación weather con entrada en XML y salida en HTML || OpenWeatherMap"
 print ""
 
 def cardinal(direccion):
@@ -40,19 +40,22 @@ allpuntocardinal = []
 
 prov = ['Almeria', 'Cadiz', 'Cordoba', 'Huelva', 'Jaen', 'Malaga', 'Sevilla']
 for elemento in prov:
- 	datos = requests.get('http://api.openweathermap.org/data/2.5/weather',params={'q':'%s,spain' % elemento})
- 	temp_max = int(valores['main']['temp_max'] - 273)
- 	temp_min = int(valores['main']['temp_min'] - 273)
- 	velocidad = int(valores['wind']['speed']*1.609)
- 	direccion = valores['wind']['deg']
- 	puntocardinal = cardinal(direccion)
- 	alltemp_max.append(temp_max)
- 	alltemp_min.append(temp_min)
- 	allvelocidad.append(velocidad)
- 	allpuntocardinal.append(puntocardinal)
+ 	datos = requests.get('http://api.openweathermap.org/data/2.5/weather?q=Seville&mode=xml&units=metric&lang=es')
+ 	cadena = etree.fromstring(datos.text.encode("utf8"))
+ 	temp = cadena.find("temperature")
+ 	temp_max = int(temp.attrib["min"])
+ 	temp_min = int(temp.attrib["max"])
+ 	print temp_max,temp_min
+ 	#velocidad = int(valores['wind']['speed']*1.609)
+ 	#direccion = valores['wind']['deg']
+ 	#puntocardinal = cardinal(direccion)
+ 	#alltemp_max.append(temp_max)
+ 	#alltemp_min.append(temp_min)
+ 	#allvelocidad.append(velocidad)
+ 	#allpuntocardinal.append(puntocardinal)
 
 html = Template(codigo)
 html = html.render(provincias=prov, temp_max=alltemp_max, temp_min=alltemp_min, velocidad=allvelocidad, direccion=allpuntocardinal,)
 fresultado.write(html)
 
-webbrowser.open("resultado.html")
+#webbrowser.open("resultado.html")
