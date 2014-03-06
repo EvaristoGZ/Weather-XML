@@ -6,24 +6,6 @@ import webbrowser
 print "Aplicación weather con entrada en XML y salida en HTML || OpenWeatherMap"
 print ""
 
-def cardinal(direccion):
-	if (direccion >= 337.5 and direccion <= 360) or (direccion >= 0 and direccion <= 22.5):
-		return 'N' 
-	if direccion >= 22.5 and direccion <= 67.5:
-		return 'NE'
-	if direccion > 67.5 and direccion <= 112.5:
-		return 'SE'
-	if direccion > 112.5 and direccion <= 157.5:
-		return 'S'
-	if direccion > 157.5 and direccion <= 202.5:
-		return 'SO'
-	if direccion > 202.5 and direccion <= 245.5:
-		return 'O'
-	if direccion > 245.5 and direccion <= 292.5:
-		return 'E'
-	if direccion > 292.5 and direccion < 337.5:
-		return 'NO'
-
 fplantilla = open('plantilla.html','r')
 plantilla = fplantilla
 fresultado = open('resultado.html','w')
@@ -45,17 +27,16 @@ for elemento in prov:
  	temp = cadena.find("temperature")
  	temp_max = int(temp.attrib["min"])
  	temp_min = int(temp.attrib["max"])
- 	print temp_max,temp_min
- 	#velocidad = int(valores['wind']['speed']*1.609)
- 	#direccion = valores['wind']['deg']
- 	#puntocardinal = cardinal(direccion)
- 	#alltemp_max.append(temp_max)
- 	#alltemp_min.append(temp_min)
- 	#allvelocidad.append(velocidad)
- 	#allpuntocardinal.append(puntocardinal)
+ 	velocidad = cadena.find("wind/speed")
+ 	velocidad = velocidad.attrib["value"]
+ 	direccion = cadena[4][1].attrib["code"]
+ 	alltemp_max.append(temp_max)
+ 	alltemp_min.append(temp_min)
+ 	allvelocidad.append(velocidad)
+ 	allpuntocardinal.append(direccion)
 
 html = Template(codigo)
 html = html.render(provincias=prov, temp_max=alltemp_max, temp_min=alltemp_min, velocidad=allvelocidad, direccion=allpuntocardinal,)
 fresultado.write(html)
 
-#webbrowser.open("resultado.html")
+webbrowser.open("resultado.html")
