@@ -22,11 +22,12 @@ allpuntocardinal = []
 
 prov = ['Almeria', 'Cadiz', 'Cordoba', 'Huelva', 'Jaen', 'Malaga', 'Sevilla']
 for elemento in prov:
- 	datos = requests.get('http://api.openweathermap.org/data/2.5/weather?q=Seville&mode=xml&units=metric&lang=es')
- 	cadena = etree.fromstring(datos.text.encode("utf8"))
+	parametros = {"q":elemento,"mode":"xml","units":"metric","lang":"es"}
+ 	datos = requests.get('http://api.openweathermap.org/data/2.5/weather?', params=parametros)
+ 	cadena = etree.fromstring(datos.text.encode("UTF8"))
  	temp = cadena.find("temperature")
- 	temp_max = int(temp.attrib["min"])
- 	temp_min = int(temp.attrib["max"])
+ 	temp_max = int(float(temp.attrib["min"]))
+ 	temp_min = int(float(temp.attrib["max"]))
  	velocidad = cadena.find("wind/speed")
  	velocidad = velocidad.attrib["value"]
  	direccion = cadena[4][1].attrib["code"]
